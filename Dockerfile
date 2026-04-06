@@ -24,7 +24,20 @@ RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     ca-certificates \
     tini \
+    git \
+    curl \
+    wget \
+    openssh-client \
+    gnupg \
   && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 20.x via nodesource
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+  && apt-get install -y --no-install-recommends nodejs \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install global npm packages for infrastructure management
+RUN npm install -g @anthropic-ai/sdk convex vercel wrangler
 
 ENV PATH="/opt/venv/bin:${PATH}" \
   PYTHONUNBUFFERED=1 \

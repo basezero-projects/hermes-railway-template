@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Railway blocks GH_TOKEN/GITHUB_TOKEN env vars, alias from custom name
+export GH_TOKEN="${GHOSTFACE_GH_TOKEN:-}"
+export GITHUB_TOKEN="${GHOSTFACE_GH_TOKEN:-}"
+
 export HERMES_HOME="${HERMES_HOME:-/data/.hermes}"
 export HOME="${HOME:-/data}"
 export MESSAGING_CWD="${MESSAGING_CWD:-/data/workspace}"

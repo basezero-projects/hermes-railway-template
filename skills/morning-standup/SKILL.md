@@ -49,15 +49,15 @@ Format: one line per failed/stale thing; skip if everything is green.
 ### Health checks — core services
 
 - `curl -s -o /dev/null -w "%{http_code}" https://simsweep-auth.syvr.dev/health` — expect 200
-- `curl -s -o /dev/null -w "%{http_code}" https://fine-bat-215.convex.cloud/health` — SYVRFinance dev
-- `curl -s -o /dev/null -w "%{http_code}" https://scintillating-dinosaur-695.convex.cloud/health` — SYVRFinance prod
+- `curl -s -o /dev/null -w "%{http_code}" https://fine-bat-215.convex.cloud/health` — Stub dev
+- `curl -s -o /dev/null -w "%{http_code}" https://scintillating-dinosaur-695.convex.cloud/health` — Stub prod
 - `curl -s -o /dev/null -w "%{http_code}" https://ghostface.syvr.dev/` — local Ollama tunnel (not in use yet but monitor)
 
 Format: only report non-200 or timeouts. Skip if everything's 200.
 
-### SYVRFinance — pending items
+### Stub — pending items
 
-`curl -s "https://scintillating-dinosaur-695.convex.cloud/api/summary?year=$(date +%Y)" -H "X-API-Key: $SYVR_FINANCE_API_KEY"` — then per the response, note:
+`curl -s "https://scintillating-dinosaur-695.convex.cloud/api/summary?year=$(date +%Y)" -H "X-API-Key: $STUB_API_KEY"` — then per the response, note:
 - Pending-review transaction count (if `pendingCount > 0`)
 - Large unreviewed expenses (amount > $100 and status=pending)
 - Quarterly tax deadline if within 14 days
@@ -65,7 +65,7 @@ Format: only report non-200 or timeouts. Skip if everything's 200.
 
 Format:
 ```
-**SYVRFinance**
+**Stub**
 - 3 pending transactions for review ($47 total)
 - Q2 federal tax due in 9 days: $1,240
 ```
@@ -104,11 +104,11 @@ Read `/data/.hermes/state/incident-alerts.json` — if any alert is currently ac
 - **simsweep-auth** (2 commits on main)
   - `abc1234` feat: add rate limiting to /cc/browse
   - `def5678` chore: bump version to 0.11.1
-- **SYVRFinance** (4 commits on master)
+- **Stub** (4 commits on master)
   - ...
 
 **Needs attention**
-- 3 pending transactions in SYVRFinance for review
+- 3 pending transactions in Stub for review
 - CI failing on syvr-site — deploy blocked
 - Q2 federal tax due in 9 days
 

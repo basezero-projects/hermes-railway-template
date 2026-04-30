@@ -11,7 +11,7 @@ created: "2026-04-23"
 ## When to use
 
 Cron-invoked at multiple intervals:
-- **Every 5 minutes** — critical-path health (user-facing: simsweep-auth, SYVRFinance prod, Cloudflare workers)
+- **Every 5 minutes** — critical-path health (user-facing: simsweep-auth, Stub prod, Cloudflare workers)
 - **Every 15 minutes** — secondary checks (Vercel deploys, GitHub Actions CI)
 - **Every hour** — slow checks (Railway service health, domain/SSL expirations — but only alert on 7-day windows)
 
@@ -46,8 +46,8 @@ State file schema:
 | Check ID | Command / URL | Pass criteria |
 |---|---|---|
 | `simsweep-auth-root` | `curl -m 10 https://simsweep-auth.syvr.dev/` | HTTP 200 AND response body JSON contains `"service":"simsweep-auth"` |
-| `syvrfinance-prod-root` | `curl -m 10 https://scintillating-dinosaur-695.convex.cloud/` | HTTP 200 |
-| `syvrfinance-dev-root` | `curl -m 10 https://fine-bat-215.convex.cloud/` | HTTP 200 |
+| `stub-prod-root` | `curl -m 10 https://scintillating-dinosaur-695.convex.cloud/` | HTTP 200 |
+| `stub-dev-root` | `curl -m 10 https://fine-bat-215.convex.cloud/` | HTTP 200 |
 
 **Deferred (need endpoint confirmation before wiring):** `simsweep-cdn` (need real hostname — `cdn.simsweep.com` does not resolve; ask Wes), Hetzner-Postgres-specific liveness (the Worker doesn't currently expose a DB-status endpoint — relying on `simsweep-auth-root` as a rough proxy means we'd miss DB-only outages; log as a TODO).
 
@@ -55,11 +55,11 @@ State file schema:
 
 | Check ID | Source | Alert when |
 |---|---|---|
-| `vercel-deploys` | `vercel list --limit 5` per project (syvr-site, syvr-admin, RaysAutoService, proglass-site, syvr-gen-studio) | Latest deploy state = `ERROR` or `CANCELED` |
+| `vercel-deploys` | `vercel list --limit 5` per project (syvr-site, syvr-admin, RaysAutoService, proglass-site, trellis) | Latest deploy state = `ERROR` or `CANCELED` |
 | `github-ci-simsweep-beta` | `gh run list -R basezero-projects/SimSweep-Beta --limit 1 --branch dev` | `conclusion = failure` |
 | `github-ci-simsweep-auth` | `gh run list -R basezero-projects/simsweep-auth --limit 1 --branch main` | `conclusion = failure` |
-| `github-ci-syvrfinance` | `gh run list -R basezero-projects/SYVRFinance --limit 1 --branch master` | `conclusion = failure` |
-| `convex-crons-syvrfinance` | via admin endpoint listing recent cron runs | any cron's last-run status = fail |
+| `github-ci-stub` | `gh run list -R basezero-projects/Stub --limit 1 --branch master` | `conclusion = failure` |
+| `convex-crons-stub` | via admin endpoint listing recent cron runs | any cron's last-run status = fail |
 
 ## Checks — slow tier (hourly)
 
@@ -109,7 +109,7 @@ Incident lasted <X min>. Service is healthy again.
 
 ## Delivery
 
-Post to `$DISCORD_HOME_CHANNEL`. Use an @everyone mention only for critical-tier alerts on user-facing services (simsweep-auth, SYVRFinance prod). Secondary/slow tier: no mentions.
+Post to `$DISCORD_HOME_CHANNEL`. Use an @everyone mention only for critical-tier alerts on user-facing services (simsweep-auth, Stub prod). Secondary/slow tier: no mentions.
 
 Suppress alerts between 23:00–06:00 MT except for critical-tier user-facing services (so overnight CI failures wait until morning, but a downed Worker pings immediately).
 

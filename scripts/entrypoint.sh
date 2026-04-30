@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Debug escape hatch — set SLEEP_MODE=1 in env to skip Hermes startup
+# and just keep the container alive so we can `railway ssh` in for ops.
+if [[ "${SLEEP_MODE:-}" = "1" ]]; then
+  echo "[bootstrap] SLEEP_MODE=1 — skipping Hermes startup, sleeping forever."
+  exec tail -f /dev/null
+fi
+
 # Railway blocks GH_TOKEN/GITHUB_TOKEN env vars, alias from custom name
 export GH_TOKEN="${GHOSTFACE_GH_TOKEN:-}"
 export GITHUB_TOKEN="${GHOSTFACE_GH_TOKEN:-}"
